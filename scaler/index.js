@@ -17,7 +17,7 @@ function getTime () {
 }
 
 async function main () {
-  await ScaleManager.init()
+  // await ScaleManager.init()
 
   const server = http.createServer(async function (req, res) {
     res.end('') // 這個要放在最前面，才能確保curl不會阻塞

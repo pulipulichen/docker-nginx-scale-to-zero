@@ -8,7 +8,7 @@ services:
       #- BACKEND=data.dlll-paas-starter.pudding.paas.dlll.pulipuli.info:80
       #- BACKEND=pudding-ThinkPad-L13-Yoga-Gen-2-Linux
       #- BACKENDS=["80,http://pudding-ThinkPad-L13-Yoga-Gen-2-Linux/"]
-      - BACKENDS=["80,http://data.dlll-paas-starter.pudding.paas.dlll.pulipuli.info/","81,http://info.cern.ch/"]
+      - BACKENDS=["80,http://data.dlll-paas-starter.pudding.paas.dlll.pulipuli.info/","81,http://info.cern.ch/","82,http://pudding-ThinkPad-L13-Yoga-Gen-2-Linux/"]
       - SCALE_DOWN_WAIT=180000
       - DEPLOY_GIT_URL=https://argocd:9UpC1PMo51UxcgtGdqAA@gitlab.nccu.syntixi.dev/deploybot/argocd.git
       - BRANCH=dlll-paas-starter-pudding
@@ -21,6 +21,7 @@ services:
     ports:
     - "7000:80"
     - "7001:81"
+    - "7002:82"
     - "8081:8081"
     - "8082:8082"
     

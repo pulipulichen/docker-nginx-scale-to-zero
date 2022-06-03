@@ -4,7 +4,7 @@ function main () {
   let content = fs.readFileSync('/etc/nginx/conf.d/default.conf.template', 'utf-8')
 
   let backends = JSON.parse(process.env.BACKENDS)
-  console.log(backends)
+  // console.log(backends)
 
   backends.forEach(function (config, i) {
     let parts = config.split(',')
@@ -21,7 +21,7 @@ function main () {
       backendContent = content.replaceAll("${BACKEND}", backend)
     }
 
-    console.log(backendContent)
+    // console.log(backendContent)
       
     fs.writeFileSync(`/etc/nginx/conf.d/default-${i}.conf`, backendContent, 'utf-8')
   })
