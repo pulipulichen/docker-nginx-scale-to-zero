@@ -4,6 +4,11 @@
 # set search paths for Lua external libraries written in C (can also use ';;'):
 #lua_package_cpath '/bar/baz/?.so;/blah/blah/?.so;;';
 
+upstream http_backend {
+    server ${BACKEND} weight=10;
+    keepalive 16; 
+}
+
 server {
   listen       80;
   server_name  localhost;
@@ -21,7 +26,9 @@ server {
   location / {
       # root   /usr/share/nginx/html;
       # index  index.html index.htm;
-      proxy_pass ${BACKEND};
+      proxy_pass http://http_backend;
+      proxy_http_version 1.1;
+      proxy_set_header Connection "";
 
       #log_by_lua '
       #  os.execute("node /scaler/index.js " .. ngx.var.remote_addr);';

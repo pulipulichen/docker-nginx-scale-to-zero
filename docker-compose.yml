@@ -4,7 +4,8 @@ services:
     build: .
     environment:
       # - BACKEND=http://help.websiteos.com/websiteos/example_of_a_simple_html_page.htm
-      - BACKEND=http://data.dlll-paas-starter.pudding.paas.dlll.pulipuli.info/
+      #- BACKEND=http://data.dlll-paas-starter.pudding.paas.dlll.pulipuli.info/
+      - BACKEND=data.dlll-paas-starter.pudding.paas.dlll.pulipuli.info1
       - SCALE_DOWN_WAIT=5000
     volumes:
     # - "./config/nginx.conf:/etc/nginx/nginx.conf:ro"
