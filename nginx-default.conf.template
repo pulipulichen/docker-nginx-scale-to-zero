@@ -11,7 +11,7 @@
 #}
 
 server {
-  listen       80;
+  listen       ${PORT};
   server_name  localhost;
 
   #access_log  /dev/null;   
@@ -45,7 +45,7 @@ server {
   #
   error_page 404 403 500 503 504 /error-page.html;
   location = /error-page.html {
-          root /html;
+          root /dlll_paas/html;
           internal;
   }
 
@@ -72,15 +72,4 @@ server {
   #location ~ /\.ht {
   #    deny  all;
   #}
-}
-
-
-server {
-  listen       8001;
-  server_name  localhost;
-
-  location / {
-    root   /html;
-    index  index.html index.htm;
-  }
 }

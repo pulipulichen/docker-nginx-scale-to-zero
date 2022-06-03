@@ -6,6 +6,9 @@
     "bash": "docker-compose build && docker-compose run app bash"
   },
   "dependencies": {
-    "express": "4.18.1"
+    "express": "4.18.1",
+    "axios": "0.27.2",
+    "axios-retry": "3.2.5",
+    "node-fetch": "2.0.0"
   }
 }

@@ -78,4 +78,9 @@ function getFullURL (req) {
 }
 
 app.listen(port)
-console.log('Redirect to VPN is started: http://localhost:' + port)
+console.log('Redirect to VPN is ready: http://localhost:' + port)
+
+process.on('SIGTERM', function () {
+  console.log('SIGTERM fired')
+  process.exit(1)
+})

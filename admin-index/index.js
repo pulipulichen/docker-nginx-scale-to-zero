@@ -98,4 +98,9 @@ function getTitle (req) {
 }
 
 app.listen(port)
-console.log('Admin-index is started: http://localhost:' + port)
+console.log('Admin-index is ready: http://localhost:' + port)
+
+process.on('SIGTERM', function () {
+  console.log('SIGTERM fired')
+  process.exit(1)
+})

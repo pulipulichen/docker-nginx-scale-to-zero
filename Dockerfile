@@ -34,12 +34,16 @@ WORKDIR /dlll_paas
 RUN npm i
 
 # =============================
+RUN apt-get install -y git
+RUN mkdir -p /dlll_paas/project_git/
+
+# =============================
 # 建議放在最後
 COPY docker-entrypoint-template.sh /docker-entrypoint.d/
 RUN chmod 777 /docker-entrypoint.d/docker-entrypoint-template.sh
 
-COPY scaler/* /dlll_paas/scaler/
-COPY html/* /dlll_paas/html/
-COPY admin-index/* /dlll_paas/admin-index/
-COPY redirect-to-vpn/* /dlll_paas/redirect-to-vpn/
+COPY scaler/ /dlll_paas/scaler/
+COPY html/ /dlll_paas/html/
+COPY admin-index/ /dlll_paas/admin-index/
+COPY redirect-to-vpn/ /dlll_paas/redirect-to-vpn/
 COPY nginx-default.conf.template /etc/nginx/conf.d/default.conf.template

@@ -2,8 +2,7 @@ const http = require('http')
 const url = require('url')
 
 const sleep = require('./lib/sleep')
-const ScaleUp = require('./ScaleUp')
-const ScaleDown = require('./ScaleDown')
+const ScaleManager = require('./ScaleManager')
 
 let locker
 let isRunning = false
@@ -17,34 +16,48 @@ function getTime () {
   return new Date().getTime()
 }
 
-const server = http.createServer(async function (req, res) {
-  const {remote_addr} = url.parse(req.url, true).query;
-  
-  if (remote_addr === '127.0.0.1') {
-    return res.end('')
-  }
-  
-  if (isRunning === false) {
-    await ScaleUp()
-    isRunning = true
-  }
-  locker = getTime()
-  let currentLocker = locker
-  
-  await sleep(SCALE_DOWN_WAIT)
+async function main () {
+  await ScaleManager.init()
 
-  if (currentLocker !== locker) {
-    // console.log('prevent scaledown')
-    return res.end('')
-  }
+  const server = http.createServer(async function (req, res) {
+    res.end('') // 這個要放在最前面，才能確保curl不會阻塞
+    return false
+    // -----------------------------
 
-  if (isRunning === true) {
-    await ScaleDown()
-    isRunning = false
-  }
+    const {remote_addr} = url.parse(req.url, true).query;
+    
+    if (remote_addr === '127.0.0.1') {
+      return false
+    }
+    
+    if (isRunning === false) {
+      isRunning = true
+      await ScaleManager.up()
+    }
+    locker = getTime()
+    let currentLocker = locker
+    
+    await sleep(SCALE_DOWN_WAIT)
 
-  res.end('')
+    if (currentLocker !== locker) {
+      // console.log('prevent scaledown')
+      return false
+    }
+
+    if (isRunning === true) {
+      await ScaleManager.down()
+      isRunning = false
+    }
+
+  })
+
+  server.listen(8080);
+  console.log('Scaler is ready.')
+}
+
+main()
+
+process.on('SIGTERM', function () {
+  console.log('SIGTERM fired')
+  process.exit(1)
 })
-
-server.listen(8080);
-console.log('Scaler is ready.')
