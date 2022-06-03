@@ -5,11 +5,14 @@ services:
     environment:
       # - BACKEND=http://help.websiteos.com/websiteos/example_of_a_simple_html_page.htm
       #- BACKEND=http://data.dlll-paas-starter.pudding.paas.dlll.pulipuli.info/
-      - BACKEND=data.dlll-paas-starter.pudding.paas.dlll.pulipuli.info1
+      #- BACKEND=data.dlll-paas-starter.pudding.paas.dlll.pulipuli.info:80
+      #- BACKEND=pudding-ThinkPad-L13-Yoga-Gen-2-Linux
+      - BACKEND=http://pudding-ThinkPad-L13-Yoga-Gen-2-Linux/
       - SCALE_DOWN_WAIT=5000
     volumes:
     # - "./config/nginx.conf:/etc/nginx/nginx.conf:ro"
     # - "./conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro"
     - "./scaler:/scaler"
+    - "./html:/html"
     ports:
     - "7000:80"

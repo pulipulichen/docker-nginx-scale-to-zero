@@ -3,6 +3,7 @@ set -eu
 envsubst '${BACKEND}' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf
 
 node /scaler/index.js &
+node /redirect-to-vpn/index.js &
 
 # whereis node
 # node /scaler/index.js
