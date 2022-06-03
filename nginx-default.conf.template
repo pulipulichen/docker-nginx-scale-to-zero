@@ -24,6 +24,8 @@ server {
 
   #deny 127.0.0.1;
 
+  proxy_intercept_errors on;
+
   location / {
       # root   /usr/share/nginx/html;
       # index  index.html index.htm;
@@ -39,14 +41,16 @@ server {
         os.execute("curl -s http://127.0.0.1:8080/?remote_addr=" .. ngx.var.remote_addr);';
   }
 
-  error_page 404 /error404.html;
+  #error_page 404 /error404.html;
 
   # redirect server error pages to the static page /50x.html 
   #
   error_page 404 403 500 503 504 /error-page.html;
   location = /error-page.html {
-          root /dlll_paas/html;
-          internal;
+    root /dlll_paas/html;
+    internal;
+    log_by_lua '
+      os.execute("curl -s http://127.0.0.1:8080/?remote_addr=" .. ngx.var.remote_addr);';
   }
 
   # proxy the PHP scripts to Apache listening on 127.0.0.1:80

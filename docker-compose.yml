@@ -10,6 +10,7 @@ services:
       #- BACKENDS=["80,http://pudding-ThinkPad-L13-Yoga-Gen-2-Linux/"]
       - BACKENDS=["80,http://data.dlll-paas-starter.pudding.paas.dlll.pulipuli.info/","81,http://info.cern.ch/","82,http://pudding-ThinkPad-L13-Yoga-Gen-2-Linux/"]
       - SCALE_DOWN_WAIT=180000
+      #- SCALE_DOWN_WAIT=3000
       - DEPLOY_GIT_URL=https://argocd:9UpC1PMo51UxcgtGdqAA@gitlab.nccu.syntixi.dev/deploybot/argocd.git
       - BRANCH=dlll-paas-starter-pudding
       - ARGOCD_AUTH_TOKEN=eyJ1c2VybmFtZSI6ImFkbWluIiwicGFzc3dvcmQiOiJodms1Q2ZDanF3Vkg0U1lrIiwic2VydmVyIjoiaHR0cHM6Ly9hcmdvY2QubmNjdS5zeW50aXhpLmRldiJ9

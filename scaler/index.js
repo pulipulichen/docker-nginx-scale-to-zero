@@ -17,11 +17,11 @@ function getTime () {
 }
 
 async function main () {
-  // await ScaleManager.init()
+  await ScaleManager.init()
 
   const server = http.createServer(async function (req, res) {
     res.end('') // 這個要放在最前面，才能確保curl不會阻塞
-    return false
+    // return false
     // -----------------------------
 
     const {remote_addr} = url.parse(req.url, true).query;
@@ -29,7 +29,7 @@ async function main () {
     if (remote_addr === '127.0.0.1') {
       return false
     }
-    
+    // console.log('go')
     if (isRunning === false) {
       isRunning = true
       await ScaleManager.up()

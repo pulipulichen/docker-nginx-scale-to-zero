@@ -6,11 +6,20 @@
 </head>
 <body>
 
+  This page will reload in <span id="sec"></span> automatically.
   Please wait...
   <script>
+  let second = 30
+  let spanEle = document.getElementById('sec')
+  spanEle.innerText = second
+  setInterval(function () {
+    second--
+    spanEle.innerText = second
+  }, 1000)
+
   setTimeout(function () {
     location.reload()
-  }, 100000)
+  }, second * 1000)
   </script>
 </body>
 </html>
