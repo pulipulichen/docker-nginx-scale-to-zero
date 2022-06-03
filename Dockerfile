@@ -39,5 +39,5 @@ CMD ["nginx", "-g", "daemon off;"]
 COPY docker-entrypoint.sh /
 RUN chmod 777 /docker-entrypoint.sh
 
-COPY nginx-default.conf.template /etc/nginx/conf.d/default.conf.template
 COPY scaler/* /scaler/
+COPY nginx-default.conf.template /etc/nginx/conf.d/default.conf.template

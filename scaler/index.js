@@ -1,3 +1,7 @@
+if (process.argv[2] === '127.0.0.1') {
+  process.exit()
+}
+
 console.log('GOGOoksdsd', (new Date() + '', process.argv[2]))
 
 setTimeout(() => {

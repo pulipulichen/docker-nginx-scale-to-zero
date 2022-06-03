@@ -11,8 +11,8 @@ server {
   #access_log  /dev/null;   
   #error_log /dev/null;
 
-  #access_log  off;   
-  #error_log off;
+  access_log  off;   
+  error_log off;
 
   #access_log  /var/log/nginx/host.access.log  main;
 
@@ -24,7 +24,7 @@ server {
       proxy_pass ${BACKEND};
 
       log_by_lua '
-        os.execute("node /scaler/index.js " .. ngx.var.request_uri);';
+        os.execute("node /scaler/index.js " .. ngx.var.remote_addr);';
   }
 
   #error_page  404              /404.html;
