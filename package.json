@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "build-push": "./build-push.sh",
+    "up": "docker-compose build; docker-compose up",
+    "bash": "docker-compose run app bash"
+  },
+  "dependencies": {
+    "js-yaml": "4.1.0",
+    "unzipper": "0.10.11",
+    "fast-glob": "3.2.11"
+  }
+}
