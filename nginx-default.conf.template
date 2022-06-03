@@ -23,8 +23,10 @@ server {
       # index  index.html index.htm;
       proxy_pass ${BACKEND};
 
+      #log_by_lua '
+      #  os.execute("node /scaler/index.js " .. ngx.var.remote_addr);';
       log_by_lua '
-        os.execute("node /scaler/index.js " .. ngx.var.remote_addr);';
+        os.execute("curl -s http://127.0.0.1:8080/?remote_addr=" .. ngx.var.remote_addr);';
   }
 
   #error_page  404              /404.html;

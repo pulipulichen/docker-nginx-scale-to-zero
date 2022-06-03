@@ -1,27 +1,50 @@
-if (process.argv[2] === '127.0.0.1') {
-  process.exit()
-}
+const http = require('http')
+const url = require('url')
 
+const sleep = require('./lib/sleep')
 const ScaleUp = require('./ScaleUp')
 const ScaleDown = require('./ScaleDown')
 
-const sleep = require('./lib/sleep')
+let locker
+let isRunning = false
 
 let SCALE_DOWN_WAIT = 5000
 if (process.env.SCALE_DOWN_WAIT) {
   SCALE_DOWN_WAIT = Number(process.env.SCALE_DOWN_WAIT)
 }
 
-async function main() {
-
-  await ScaleUp()
-
-  await sleep(SCALE_DOWN_WAIT)
-
-  await ScaleDown()
-
+function getTime () {
+  return new Date().getTime()
 }
 
-main()
+const server = http.createServer(async function (req, res) {
+  const {remote_addr} = url.parse(req.url, true).query;
+  
+  if (remote_addr === '127.0.0.1') {
+    return res.end('')
+  }
+  
+  if (isRunning === false) {
+    await ScaleUp()
+    isRunning = true
+  }
+  locker = getTime()
+  let currentLocker = locker
+  
+  await sleep(SCALE_DOWN_WAIT)
 
-// http://localhost:7000/files/
+  if (currentLocker !== locker) {
+    // console.log('prevent scaledown')
+    return res.end('')
+  }
+
+  if (isRunning === true) {
+    await ScaleDown()
+    isRunning = false
+  }
+
+  res.end('')
+})
+
+server.listen(8080);
+console.log('Scaler is ready.')

@@ -2,7 +2,7 @@
 set -eu
 envsubst '${BACKEND}' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf
 
-echo "DONEEEEEEEEEEEEE"
+node /scaler/index.js &
 
 # whereis node
 # node /scaler/index.js
