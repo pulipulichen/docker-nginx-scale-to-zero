@@ -16,7 +16,7 @@ server {
 
   #access_log  /var/log/nginx/host.access.log  main;
 
-  deny 127.0.0.1;
+  #deny 127.0.0.1;
 
   location / {
       # root   /usr/share/nginx/html;

@@ -24,20 +24,15 @@ WORKDIR /
 # Custom reverse proxy with environment vairables
 # https://serverfault.com/a/919212/432158
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+#ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
-
-# =============================
-# Lua-nginx-module
-# https://stackoverflow.com/a/53005072/6645399
-# https://docs.nginx.com/nginx/admin-guide/dynamic-modules/lua/
-
-
+#ENTRYPOINT []
+#CMD ["/docker-entrypoint.sh"]
 
 # =============================
 # 建議放在最後
-COPY docker-entrypoint.sh /
-RUN chmod 777 /docker-entrypoint.sh
+COPY docker-entrypoint-template.sh /docker-entrypoint.d/
+RUN chmod 777 /docker-entrypoint.d/docker-entrypoint-template.sh
 
 COPY scaler/* /scaler/
 COPY nginx-default.conf.template /etc/nginx/conf.d/default.conf.template
