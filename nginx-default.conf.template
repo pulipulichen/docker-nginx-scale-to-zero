@@ -58,10 +58,10 @@ server {
       #more_set_headers 'Access-Control-Allow-Credentials:true';
       #more_set_headers 'Access-Control-Allow-Headers:DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
 
-      proxy_set_headers 'Access-Control-Allow-Origin:*';
-      proxy_set_headers 'Access-Control-Allow-Methods: GET,POST,OPTIONS';
-      proxy_set_headers 'Access-Control-Allow-Credentials:true';
-      proxy_set_headers 'Access-Control-Allow-Headers:DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+      proxy_set_header Access-Control-Allow-Origin *;
+      proxy_set_header Access-Control-Allow-Methods GET,POST,OPTIONS;
+      proxy_set_header Access-Control-Allow-Credentials true;
+      proxy_set_header Access-Control-Allow-Headers DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type;
       
       
       proxy_set_header X-Frame-Options SAMEORIGIN;
