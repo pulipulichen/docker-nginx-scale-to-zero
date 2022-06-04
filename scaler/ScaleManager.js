@@ -25,26 +25,26 @@ async function setGitUser () {
 
   let {username, host} = new URL(DEPLOY_GIT_URL)
 
-  await ShellExec(`git config --global user.email "${username}@${host}"`)
-  await ShellExec(`git config --global user.name "${username}"`)
+  await ShellExec(`git config --global user.email "${username}@${host}"`, {verbose: false})
+  await ShellExec(`git config --global user.name "${username}"`, {verbose: false})
 
 }
 
 async function checkRepo () {
-  await ShellExec(`git checkout -b ${BRANCH} || git checkout ${BRANCH}`)
+  await ShellExec(`git checkout -b ${BRANCH} || git checkout ${BRANCH}`, {verbose: false})
 
   // await ShellExec(`ls -l`)
 }
 
 async function pullRepo () {
-  await ShellExec(`git reset --hard`)
-  await ShellExec(`git pull --rebase`)
+  await ShellExec(`git reset --hard`, {verbose: false})
+  await ShellExec(`git pull --rebase`, {verbose: false})
 }
 
 async function cloneGitRepo () {
   if (fs.existsSync(gitFolder) === false) {
     process.chdir(gitParentFolder)
-    await ShellExec(`git clone -b ${BRANCH} ${DEPLOY_GIT_URL} || git clone ${DEPLOY_GIT_URL}`, {retry: 3})
+    await ShellExec(`git clone -b ${BRANCH} ${DEPLOY_GIT_URL} || git clone ${DEPLOY_GIT_URL}`, {retry: 3, verbose: false})
   }
 }
 
@@ -54,8 +54,8 @@ async function pushRepo () {
   await ShellExec([
     `git add .`,
     `git commit -m "ScaleManager: ${(new Date())}" --allow-empty`,
-  ])
-  await ShellExec(`git push -f ${DEPLOY_GIT_URL}`, { retry: 10 })
+  ], {verbose: false })
+  await ShellExec(`git push -f ${DEPLOY_GIT_URL}`, { retry: 10, verbose: false })
 
   if (!token) {
     token = await ArgocdHelpers.getCookieToken()
@@ -85,10 +85,13 @@ async function update() {
 }
 
 async function ScaleUp() {
-  while (gitLock === true) {
+  if (gitLock === 'up') {
+    return false
+  }
+  while (gitLock !== false) {
     await sleep(100)
   }
-  gitLock = true
+  gitLock = 'up'
 
   console.log('ScaleUp\t', (new Date()))
 
@@ -103,10 +106,13 @@ async function ScaleUp() {
 }
 
 async function ScaleDown() {
-  while (gitLock === true) {
+  if (gitLock === 'down') {
+    return false
+  }
+  while (gitLock !== false) {
     await sleep(100)
   }
-  gitLock = true
+  gitLock = 'down'
 
   console.log('ScaleDown\t', (new Date()))
 

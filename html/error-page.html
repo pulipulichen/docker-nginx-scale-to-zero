@@ -12,13 +12,18 @@
   let second = 30
   let spanEle = document.getElementById('sec')
   spanEle.innerText = second
-  setInterval(function () {
+  let timer = setInterval(function () {
+    if (second === 0) {
+      clearInterval(timer)
+      return false
+    }
+
     second--
     spanEle.innerText = second
   }, 1000)
 
   setTimeout(function () {
-    location.reload()
+    // location.reload()
   }, second * 1000)
   </script>
 </body>

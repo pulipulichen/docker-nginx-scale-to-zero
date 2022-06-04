@@ -38,38 +38,25 @@ server {
       #proxy_http_version 1.1;
       #proxy_set_header Connection "";
       proxy_pass http://${BACKEND}/;
-      proxy_read_timeout 1s;
+      #proxy_read_timeout 1s;
       proxy_connect_timeout       1s;
-      proxy_send_timeout          1s;
-      send_timeout                1s;
+      #proxy_send_timeout          1s;
+      #send_timeout                1s;
 
-      # https://xyz.cinc.biz/2021/05/nginx-reverse-proxy-websocket.html
-      proxy_http_version 1.1; #WebSocket
-      proxy_set_header Upgrade $http_upgrade; #WebSocket
-      proxy_set_header Connection $connection_upgrade; #WebSocket       
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Forwarded-Proto https;
-      proxy_set_header Cookie $http_cookie;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "Upgrade";
+      proxy_set_header Host $host;
 
-      # https://stackoverflow.com/a/50192522/6645399
-      #more_set_headers 'Access-Control-Allow-Origin:*';
-      #more_set_headers 'Access-Control-Allow-Methods: GET,POST,OPTIONS';
-      #more_set_headers 'Access-Control-Allow-Credentials:true';
-      #more_set_headers 'Access-Control-Allow-Headers:DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+      content_by_lua_block {
+        local headers = ngx.req.get_headers()
+        ngx.say("Host: ", ngx.req.get_headers()["Host"])
+      }
 
-      proxy_set_header Access-Control-Allow-Origin *;
-      proxy_set_header Access-Control-Allow-Methods GET,POST,OPTIONS;
-      proxy_set_header Access-Control-Allow-Credentials true;
-      proxy_set_header Access-Control-Allow-Headers DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type;
-      
-      
-      proxy_set_header X-Frame-Options SAMEORIGIN;
-
-      #log_by_lua '
-      #  os.execute("node /scaler/index.js " .. ngx.var.remote_addr);';
-      log_by_lua '
-        os.execute("curl -s http://127.0.0.1:8080/?remote_addr=" .. ngx.var.remote_addr);';
+      #log_by_lua_block { 
+      #  local headers = ngx.req.get_headers()
+      #  os.execute('curl -s "http://127.0.0.1:8080/?remote_addr=' .. ngx.var.remote_addr .. '&header=' .. headers .. '"');
+      #}
   }
 
   #error_page 404 /error404.html;
@@ -80,8 +67,15 @@ server {
   location = /error-page.html {
     root /dlll_paas/html;
     internal;
-    log_by_lua '
-      os.execute("curl -s http://127.0.0.1:8080/?remote_addr=" .. ngx.var.remote_addr);';
+    content_by_lua_block {
+      local headers = ngx.req.get_headers()
+      ngx.say("Host: ", ngx.req.get_headers()["Host"])
+    }
+
+    #log_by_lua_block {
+    #  local headers = ngx.req.get_headers()
+    #  os.execute('curl -s "http://127.0.0.1:8080/?force_scale_up=true&remote_addr=' .. ngx.var.remote_addr .. '&header=' .. headers .. '"');
+    #}
   }
 
   # proxy the PHP scripts to Apache listening on 127.0.0.1:80

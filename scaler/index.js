@@ -25,15 +25,27 @@ async function main () {
     // return false
     // -----------------------------
 
-    const {remote_addr} = url.parse(req.url, true).query;
-    
+    const {remote_addr, force_scale_up = false, status} = url.parse(req.url, true).query;
+    // console.log({url: req.url, force_scale_up, isRunning, status})
+
     if (remote_addr === '127.0.0.1') {
       return false
     }
     // console.log('go')
+
+    console.log({url: req.url, force_scale_up, isRunning, status, remote_addr})
+    
+    if (isRunning === true && force_scale_up !== false) {
+      console.log('Set force')
+      isRunning = false
+    }
+
     if (isRunning === false) {
       isRunning = true
-      await ScaleManager.up()
+      if ((await ScaleManager.up()) === false) {
+        console.log('Already to up')
+        return false
+      }
     }
     locker = getTime()
     let currentLocker = locker

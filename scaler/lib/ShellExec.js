@@ -6,17 +6,22 @@ module.exports = async function (cmd, options = {}) {
     cmd = cmd.join(' && ')
   }
 
-  let {stderrHandler, errorHandler, retry} = options
+  let {stderrHandler, errorHandler, retry, verbose = false} = options
   
   if (typeof(stderrHandler) !== 'function') {
     stderrHandler = function (stderr) {
-      console.log(`[STDERR] ${stderr}`);
+      if (verbose) {
+        console.log(`[STDERR] ${stderr}`);
+      }
+        
     }
   }
 
   if (typeof(errorHandler) !== 'function') {
     errorHandler = function (error, reject) {
-      console.error(`[ERROR]\n${error.message}`)
+      if (verbose) {
+        console.error(`[ERROR]\n${error.message}`)
+      }
       reject(error)
       return
     }
@@ -40,7 +45,9 @@ module.exports = async function (cmd, options = {}) {
         }
 
         if (stdout.trim() !== '') {
-          console.log(`[STDOUT] ${stdout}`)
+          if (verbose) {
+            console.log(`[STDOUT] ${stdout}`)
+          }
         }
         
         resolve(`[STDOUT]\n${stdout}`)

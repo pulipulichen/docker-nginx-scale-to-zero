@@ -135,15 +135,15 @@ module.exports = {
         //if (status.operationState.phase !== 'Running') {
         if (status.conditions && 
             (status.conditions[0].type.indexOf('Error') > -1 )) {
-            console.log('==Retry: ' + retry + '===========================')
-            console.log(status)
-            console.log('=============================')
-            console.log(status.resources)
-            console.log('=============================')
+            // console.log('==Retry: ' + retry + '===========================')
+            // console.log(status)
+            // console.log('=============================')
+            // console.log(status.resources)
+            // console.log('=============================')
 
-            console.log('============================')
-            console.log('Condition have errors')
-            console.log('============================')
+            // console.log('============================')
+            // console.log('Condition have errors')
+            // console.log('============================')
             return status
         }
 
@@ -153,15 +153,15 @@ module.exports = {
             status.operationState.phase !== 'Running') {
             
 
-            console.log('==Retry: ' + retry + '===========================')
-            console.log(status)
-            console.log('=============================')
-            console.log(status.resources)
-            console.log('=============================')
+            // console.log('==Retry: ' + retry + '===========================')
+            // console.log(status)
+            // console.log('=============================')
+            // console.log(status.resources)
+            // console.log('=============================')
 
-            console.log('============================')
-            console.log('Health degraded')
-            console.log('============================')
+            // console.log('============================')
+            // console.log('Health degraded')
+            // console.log('============================')
             await this.sleep(10000)
             await this.syncApp(appName, token)
             retry++
@@ -172,29 +172,29 @@ module.exports = {
                 status.operationState.phase === 'Running' && 
                 status.operationState.message && 
                 status.operationState.message.startsWith('one or more objects failed to apply, reason:')) {
-            console.log('==Retry: ' + retry + '===========================')
-            console.log(status)
-            console.log('=============================')
-            console.log(status.resources)
-            console.log('=============================')
+            // console.log('==Retry: ' + retry + '===========================')
+            // console.log(status)
+            // console.log('=============================')
+            // console.log(status.resources)
+            // console.log('=============================')
             
-            console.log('============================')
-            console.log('Failed to apply')
-            console.log('============================')
+            // console.log('============================')
+            // console.log('Failed to apply')
+            // console.log('============================')
             return status
         }
 
         if (status.operationState && 
             status.operationState.phase === 'Error') {
-            console.log('==Retry: ' + retry + '===========================')
-            console.log(status)
-            console.log('=============================')
-            console.log(status.resources)
-            console.log('=============================')
+            // console.log('==Retry: ' + retry + '===========================')
+            // console.log(status)
+            // console.log('=============================')
+            // console.log(status.resources)
+            // console.log('=============================')
             
-            console.log('============================')
-            console.log('Operation error')
-            console.log('============================')
+            // console.log('============================')
+            // console.log('Operation error')
+            // console.log('============================')
             return status
         }
 
@@ -203,9 +203,9 @@ module.exports = {
             status.resources.filter(r => r.health && r.health.status !== 'Healthy').length > 0 ) {
             await this.sleep(10000)
             retry++
-            console.log('============================')
-            console.log('Wait for resource not healthy: ' + retry)
-            console.log('============================')
+            // console.log('============================')
+            // console.log('Wait for resource not healthy: ' + retry)
+            // console.log('============================')
             return await this.waitOperation(appName, token, retry)
         }
 
@@ -213,15 +213,15 @@ module.exports = {
             status.health.status === 'Progressing') {
             await this.sleep(10000)
             retry++
-            console.log('============================')
-            console.log('Wait for Progressing: ' + retry)
-            console.log('============================')
+            // console.log('============================')
+            // console.log('Wait for Progressing: ' + retry)
+            // console.log('============================')
             return await this.waitOperation(appName, token, retry)
         }
 
-        console.log('============================')
-        console.log('Status: Healthy')
-        console.log('============================')
+        // console.log('============================')
+        // console.log('Status: Healthy')
+        // console.log('============================')
         return status
     },
     
