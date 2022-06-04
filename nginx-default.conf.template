@@ -10,6 +10,11 @@
 #    #keepalive 16; 
 #}
 
+map $http_upgrade $connection_upgrade {
+  default upgrade;
+  '' close;
+}
+
 server {
   listen       ${PORT};
   server_name  localhost;
@@ -17,8 +22,8 @@ server {
   #access_log  /dev/null;   
   #error_log /dev/null;
 
-  access_log  off;   
-  error_log off;
+  #access_log  off;   
+  #error_log off;
 
   #access_log  /var/log/nginx/host.access.log  main;
 
@@ -32,8 +37,34 @@ server {
       #proxy_pass http://http_backend/;
       #proxy_http_version 1.1;
       #proxy_set_header Connection "";
-      proxy_pass ${BACKEND};
+      proxy_pass http://${BACKEND}/;
       proxy_read_timeout 1s;
+      proxy_connect_timeout       1s;
+      proxy_send_timeout          1s;
+      send_timeout                1s;
+
+      # https://xyz.cinc.biz/2021/05/nginx-reverse-proxy-websocket.html
+      proxy_http_version 1.1; #WebSocket
+      proxy_set_header Upgrade $http_upgrade; #WebSocket
+      proxy_set_header Connection $connection_upgrade; #WebSocket       
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto https;
+      proxy_set_header Cookie $http_cookie;
+
+      # https://stackoverflow.com/a/50192522/6645399
+      #more_set_headers 'Access-Control-Allow-Origin:*';
+      #more_set_headers 'Access-Control-Allow-Methods: GET,POST,OPTIONS';
+      #more_set_headers 'Access-Control-Allow-Credentials:true';
+      #more_set_headers 'Access-Control-Allow-Headers:DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+
+      proxy_set_headers 'Access-Control-Allow-Origin:*';
+      proxy_set_headers 'Access-Control-Allow-Methods: GET,POST,OPTIONS';
+      proxy_set_headers 'Access-Control-Allow-Credentials:true';
+      proxy_set_headers 'Access-Control-Allow-Headers:DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+      
+      
+      proxy_set_header X-Frame-Options SAMEORIGIN;
 
       #log_by_lua '
       #  os.execute("node /scaler/index.js " .. ngx.var.remote_addr);';

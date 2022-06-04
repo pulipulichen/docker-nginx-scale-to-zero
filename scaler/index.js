@@ -7,10 +7,11 @@ const ScaleManager = require('./ScaleManager')
 let locker
 let isRunning = false
 
-let SCALE_DOWN_WAIT = 5000
-if (process.env.SCALE_DOWN_WAIT) {
-  SCALE_DOWN_WAIT = Number(process.env.SCALE_DOWN_WAIT)
+let SCALE_DOWN_WAIT_MINUTES = 1
+if (process.env.SCALE_DOWN_WAIT_MINUTES) {
+  SCALE_DOWN_WAIT_MINUTES = Number(process.env.SCALE_DOWN_WAIT_MINUTES)
 }
+let SCALE_DOWN_WAIT = SCALE_DOWN_WAIT_MINUTES * 60 * 1000
 
 function getTime () {
   return new Date().getTime()
@@ -37,6 +38,7 @@ async function main () {
     locker = getTime()
     let currentLocker = locker
     
+    console.log('Wait for scale down...', SCALE_DOWN_WAIT_MINUTES , (new Date()))
     await sleep(SCALE_DOWN_WAIT)
 
     if (currentLocker !== locker) {

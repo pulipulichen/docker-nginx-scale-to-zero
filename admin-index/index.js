@@ -1,10 +1,10 @@
 const express = require('express')
 const app = express()
 
-let port = 8081
-// if (process.env.APP_PORT) {
-//   port = Number(process.env.APP_PORT)
-// }
+let port = 9001
+if (process.env.PORT_ADMIN_INDEX) {
+   port = Number(process.env.PORT_ADMIN_INDEX)
+}
 
 app.get('/', function (req, res) {
   if (req.originalUrl === '/favicon.ico') {

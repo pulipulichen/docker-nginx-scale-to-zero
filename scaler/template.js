@@ -1,5 +1,19 @@
 const fs = require('fs');
 
+function filterBackend(backend) {
+  if (backend.startsWith('http://')) {
+    backend = backend.slice(7)
+  }
+  if (backend.startsWith('https://')) {
+    backend = backend.slice(8)
+  }
+  if (backend.endsWith('/')) {
+    backend = backend.slice(0, -1)
+  }
+
+  return backend
+}
+
 function main () {
   let content = fs.readFileSync('/etc/nginx/conf.d/default.conf.template', 'utf-8')
 
@@ -11,13 +25,13 @@ function main () {
     let backendContent
     if (parts.length > 1) {
       let port = parts[0]
-      let backend = parts[1]
+      let backend = filterBackend(parts[1])
 
       backendContent = content.replaceAll("${BACKEND}", backend)
                                   .replaceAll("${PORT}", port)
     }
     else {
-      let backend = parts[0]
+      let backend = filterBackend(parts[0])
       backendContent = content.replaceAll("${BACKEND}", backend)
     }
 

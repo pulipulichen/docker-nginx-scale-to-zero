@@ -1,10 +1,10 @@
 const express = require('express')
 const app = express()
 
-let port = 8082
-// if (process.env.APP_PORT) {
-//   port = Number(process.env.APP_PORT)
-// }
+let port = 9002
+if (process.env.PORT_REDIRECT_TO_VPN) {
+   port = Number(process.env.PORT_REDIRECT_TO_VPN)
+}
 
 app.all('*', function (req, res) {
   if (req.originalUrl === '/favicon.ico') {

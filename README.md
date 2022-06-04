@@ -3,13 +3,15 @@ A reverse proxy to scale deployment to zero.
 
 # Environment Variables
 
-- BACKENDS=["80,https://blog.pulipuli.info"]
+- BACKENDS=["80,blog.pulipuli.info"]
 - VPN_HTTP_PORT=31443
 - DEBUG_LOCAL_PORT
 - ENV_SERVICE_SERVER
+- PORT_ADMIN_INDEX
+- PORT_REDIRECT_TO_VPN
 
 # Ports
 
-- main:80
-- admin-index:8081
-- redirect-to-vpn:8082
+- main:80 (看BACKENDS的設定)
+- admin-index:9001
+- redirect-to-vpn:9002
