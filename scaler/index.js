@@ -20,6 +20,7 @@ function getTime () {
 async function main () {
   await ScaleManager.init()
 
+  let scaleDownTimer
   const server = http.createServer(async function (req, res) {
     res.end('') // 這個要放在最前面，才能確保curl不會阻塞
     // return false
@@ -33,36 +34,37 @@ async function main () {
     }
     // console.log('go')
 
-    console.log({url: req.url, force_scale_up, isRunning, status, remote_addr})
+    // console.log({url: req.url, force_scale_up, isRunning, status, remote_addr})
     
     if (isRunning === true && force_scale_up !== false) {
-      console.log('Set force')
+      // console.log('Set force')
       isRunning = false
     }
 
     if (isRunning === false) {
       isRunning = true
       if ((await ScaleManager.up()) === false) {
-        console.log('Already to up')
+        // console.log('Already to up')
         return false
       }
     }
-    locker = getTime()
-    let currentLocker = locker
+    // locker = getTime()
+    // let currentLocker = locker
     
-    console.log('Wait for scale down...', SCALE_DOWN_WAIT_MINUTES , (new Date()))
-    await sleep(SCALE_DOWN_WAIT)
-
-    if (currentLocker !== locker) {
-      // console.log('prevent scaledown')
-      return false
-    }
-
-    if (isRunning === true) {
-      await ScaleManager.down()
-      isRunning = false
-    }
-
+    // console.log('Wait for scale down...', SCALE_DOWN_WAIT_MINUTES , (new Date()))
+    // await sleep(SCALE_DOWN_WAIT)
+    // console.log({currentLocker, locker})
+    // if (currentLocker !== locker) {
+    //   console.log('prevent scaledown', (new Date()))
+    //   return false
+    // }
+    clearTimeout(scaleDownTimer)
+    scaleDownTimer = setTimeout(async () => {
+      if (isRunning === true) {
+        await ScaleManager.down()
+        isRunning = false
+      }
+    }, SCALE_DOWN_WAIT)
   })
 
   server.listen(8080);

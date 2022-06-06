@@ -17,6 +17,12 @@ function filterBackend(backend) {
 function main () {
   let content = fs.readFileSync('/etc/nginx/conf.d/default.conf.template', 'utf-8')
 
+  if (!process.env.BACKENDS) {
+    return false
+  }
+
+  let {CONNTECT_TIMEOUT = '1s'} = process.env
+
   let backends = JSON.parse(process.env.BACKENDS)
   // console.log(backends)
 
@@ -34,6 +40,8 @@ function main () {
       let backend = filterBackend(parts[0])
       backendContent = content.replaceAll("${BACKEND}", backend)
     }
+
+    backendContent = content.replaceAll("${CONNTECT_TIMEOUT}", CONNTECT_TIMEOUT)
 
     // console.log(backendContent)
       

@@ -22,8 +22,8 @@ server {
   #access_log  /dev/null;   
   #error_log /dev/null;
 
-  #access_log  off;   
-  #error_log off;
+  access_log  off;   
+  error_log off;
 
   #access_log  /var/log/nginx/host.access.log  main;
 
@@ -39,7 +39,7 @@ server {
       #proxy_set_header Connection "";
       proxy_pass http://${BACKEND}/;
       #proxy_read_timeout 1s;
-      proxy_connect_timeout       1s;
+      proxy_connect_timeout       ${CONNECT_TIMEOUT};
       #proxy_send_timeout          1s;
       #send_timeout                1s;
 
@@ -48,15 +48,19 @@ server {
       proxy_set_header Connection "Upgrade";
       proxy_set_header Host $host;
 
-      content_by_lua_block {
-        local headers = ngx.req.get_headers()
-        ngx.say("Host: ", ngx.req.get_headers()["Host"])
-      }
-
-      #log_by_lua_block { 
+      #content_by_lua_block {
       #  local headers = ngx.req.get_headers()
-      #  os.execute('curl -s "http://127.0.0.1:8080/?remote_addr=' .. ngx.var.remote_addr .. '&header=' .. headers .. '"');
+      #  ngx.say("Host: ", ngx.req.get_headers()[""])
       #}
+
+      log_by_lua_block { 
+        local headers = ngx.req.get_headers()
+        local SourceFromIngress = "false"
+        if headers["SourceFromIngress"] then
+          SourceFromIngress = "true"
+        end
+        os.execute('curl -s "http://127.0.0.1:8080/?remote_addr=' .. ngx.var.remote_addr .. '&header=' .. SourceFromIngress .. '"');
+      }
   }
 
   #error_page 404 /error404.html;
@@ -67,15 +71,20 @@ server {
   location = /error-page.html {
     root /dlll_paas/html;
     internal;
-    content_by_lua_block {
-      local headers = ngx.req.get_headers()
-      ngx.say("Host: ", ngx.req.get_headers()["Host"])
-    }
 
-    #log_by_lua_block {
+    #content_by_lua_block {
     #  local headers = ngx.req.get_headers()
-    #  os.execute('curl -s "http://127.0.0.1:8080/?force_scale_up=true&remote_addr=' .. ngx.var.remote_addr .. '&header=' .. headers .. '"');
+    #  ngx.say("Host: ", ngx.req.get_headers()["Foo2"])
     #}
+
+    log_by_lua_block { 
+      local headers = ngx.req.get_headers()
+      local SourceFromIngress = "false"
+      if headers["SourceFromIngress"] then
+        SourceFromIngress = "true"
+      end
+      os.execute('curl -s "http://127.0.0.1:8080/?force_scale_up=true&remote_addr=' .. ngx.var.remote_addr .. '&header=' .. SourceFromIngress .. '"');
+    }
   }
 
   # proxy the PHP scripts to Apache listening on 127.0.0.1:80

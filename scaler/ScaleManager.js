@@ -106,7 +106,8 @@ async function ScaleUp() {
 }
 
 async function ScaleDown() {
-  if (gitLock === 'down') {
+  if (gitLock !== false) {
+    console.log('scale down is processing...')
     return false
   }
   while (gitLock !== false) {
