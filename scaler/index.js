@@ -21,7 +21,8 @@ async function main () {
   await ScaleManager.init()
 
   let scaleDownTimer
-  const server = http.createServer(async function (req, res) {
+
+  let handler = async function (req, res) {
     res.end('') // 這個要放在最前面，才能確保curl不會阻塞
     // return false
     // -----------------------------
@@ -43,10 +44,21 @@ async function main () {
 
     if (isRunning === false) {
       isRunning = true
-      if ((await ScaleManager.up()) === false) {
-        // console.log('Already to up')
-        return false
+      while (true) {
+        try {
+          if ((await ScaleManager.up()) === false) {
+            // console.log('Already to up')
+            return false
+          }
+          break
+        }
+        catch (e) {
+          console.error(e)
+          await sleep(10000)
+        }
       }
+        
+
     }
     // locker = getTime()
     // let currentLocker = locker
@@ -61,11 +73,21 @@ async function main () {
     clearTimeout(scaleDownTimer)
     scaleDownTimer = setTimeout(async () => {
       if (isRunning === true) {
-        await ScaleManager.down()
+        while (true) {
+          try {
+            await ScaleManager.down()
+            break
+          } catch (e) {
+            console.error(e)
+            await sleep(10000)
+          }
+        }
         isRunning = false
       }
     }, SCALE_DOWN_WAIT)
-  })
+  }
+
+  const server = http.createServer(handler)
 
   server.listen(8080);
   console.log('Scaler is ready.')

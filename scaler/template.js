@@ -21,7 +21,7 @@ function main () {
     return false
   }
 
-  let {CONNTECT_TIMEOUT = '1s'} = process.env
+  let {CONNTECT_TIMEOUT = '7s'} = process.env
 
   let backends = JSON.parse(process.env.BACKENDS)
   // console.log(backends)
@@ -41,7 +41,7 @@ function main () {
       backendContent = content.replaceAll("${BACKEND}", backend)
     }
 
-    backendContent = content.replaceAll("${CONNTECT_TIMEOUT}", CONNTECT_TIMEOUT)
+    backendContent = backendContent.replaceAll("${CONNTECT_TIMEOUT}", CONNTECT_TIMEOUT)
 
     // console.log(backendContent)
       

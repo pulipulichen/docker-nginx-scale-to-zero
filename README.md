@@ -4,7 +4,7 @@ A reverse proxy to scale deployment to zero.
 # Environment Variables
 
 - BACKENDS=["80,blog.pulipuli.info"]
-- CONNECT_TIMEOUT=1s
+- CONNECT_TIMEOUT=7s
 - VPN_HTTP_PORT=31443
 - DEBUG_LOCAL_PORT
 - ENV_SERVICE_SERVER
