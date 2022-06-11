@@ -6,7 +6,28 @@ if (process.env.PORT_ADMIN_INDEX) {
    port = Number(process.env.PORT_ADMIN_INDEX)
 }
 
-app.get('/', function (req, res) {
+app.get('/env.js', function (req, res) {
+  res.writeHead(200, {'Content-Type':'text/javascript'});
+  let lines =[]
+  Object.keys(process.env).forEach(key => {
+    if (!key.startsWith('ENV_')) {
+        return false
+    }
+    let value = process.env[key]
+
+    if ( ((value.startsWith('{') && value.endsWith('}')) || 
+         (value.startsWith('[') && value.endsWith(']'))) === false ) {
+      value = `"${value}"`
+    }
+
+    lines.push(`window.${key} = ${value}`)
+  })
+  res.write(lines.join(`\n`));
+
+  res.end(); //end the response
+})
+
+app.get('*', function (req, res) {
   if (req.originalUrl === '/favicon.ico') {
     return res.end()
   }
@@ -56,34 +77,13 @@ app.get('/', function (req, res) {
   
     </head>
     <body>
-      <script src="env.js"></script>
+      <script src="/env.js"></script>
       <script src="${baseURL}dist/index.js"></script>
     </body>
   </html>
   `
   res.writeHead(200, {'Content-Type':'text/html'});
   res.write(html);
-
-  res.end(); //end the response
-})
-
-app.get('/env.js', function (req, res) {
-  res.writeHead(200, {'Content-Type':'text/javascript'});
-  let lines =[]
-  Object.keys(process.env).forEach(key => {
-    if (!key.startsWith('ENV_')) {
-        return false
-    }
-    let value = process.env[key]
-
-    if ( ((value.startsWith('{') && value.endsWith('}')) || 
-         (value.startsWith('[') && value.endsWith(']'))) === false ) {
-      value = `"${value}"`
-    }
-
-    lines.push(`window.${key} = ${value}`)
-  })
-  res.write(lines.join(`\n`));
 
   res.end(); //end the response
 })

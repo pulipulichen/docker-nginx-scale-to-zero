@@ -11,7 +11,7 @@ module.exports = async function (cmd, options = {}) {
   if (typeof(stderrHandler) !== 'function') {
     stderrHandler = function (stderr) {
       if (verbose) {
-        console.log(`[STDERR] ${stderr}`);
+        console.log(`${new Date()}[STDERR] ${stderr}`);
       }
         
     }
@@ -20,7 +20,7 @@ module.exports = async function (cmd, options = {}) {
   if (typeof(errorHandler) !== 'function') {
     errorHandler = function (error, reject) {
       if (verbose) {
-        console.error(`[ERROR]\n${error.message}`)
+        console.error(`${new Date()}[ERROR]\n${error.message}`)
       }
       reject(error)
       return
@@ -46,7 +46,7 @@ module.exports = async function (cmd, options = {}) {
 
         if (stdout.trim() !== '') {
           if (verbose) {
-            console.log(`[STDOUT] ${stdout}`)
+            console.log(`${new Date()}[STDOUT] ${stdout}`)
           }
         }
         

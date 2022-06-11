@@ -75,13 +75,18 @@ async function pushRepo () {
 
 async function ScaleInit() {
 
-  console.log('ScaleInit\t', (new Date()))
+  // console.log('ScaleInit\t', (new Date()))
 
-  await cloneGitRepo()
-  await setGitUser()
+  // await cloneGitRepo()
+  // await setGitUser()
 
-  process.chdir(gitFolder)
-  await checkRepo()
+  // process.chdir(gitFolder)
+  // await checkRepo()
+
+  if (!token) {
+    token = await ArgocdHelpers.getCookieToken()
+  }
+  await ArgocdHelpers.resetParameter(BRANCH, token)
 }
 
 async function update() {
@@ -98,16 +103,23 @@ async function ScaleUp() {
   }
   gitLock = 'up'
 
-  console.log((new Date()), 'ScaleUp', )
+  // console.log((new Date()), 'ScaleUp', )
 
-  process.chdir(gitFolder)
-  await update()
+  // process.chdir(gitFolder)
+  // await update()
 
-  modifyValuesYAML('false', 'true')
+  // modifyValuesYAML('false', 'true')
 
-  await pushRepo()
+  // await pushRepo()
+  if (!token) {
+    token = await ArgocdHelpers.getCookieToken()
+  }
+  await ArgocdHelpers.setParameterWekaUp(BRANCH, token, true)
+
 
   gitLock = false
+
+  return true
 }
 
 async function ScaleDown() {
@@ -122,14 +134,20 @@ async function ScaleDown() {
 
   console.log((new Date(), 'ScaleDown'))
 
-  process.chdir(gitFolder)
-  await update()
+  // process.chdir(gitFolder)
+  // await update()
 
-  modifyValuesYAML('true', 'false')
+  // modifyValuesYAML('true', 'false')
 
-  await pushRepo()
+  // await pushRepo()
+  if (!token) {
+    token = await ArgocdHelpers.getCookieToken()
+  }
+  await ArgocdHelpers.setParameterWekaUp(BRANCH, token, false)
 
   gitLock = false
+
+  return true
 }
 
 const valuesPath = path.join(gitFolder, '/values.yaml')

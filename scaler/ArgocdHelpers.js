@@ -50,7 +50,108 @@ module.exports = {
 
         return token
     },
-    
+    setParameterWekaUp: async function (appName, token, wakeUp = true) {
+        await this.getConfig()
+        //const url = config.server + '/api/v1/applications/deploybot-' + appName + '?refresh=normal'
+        const url = config.server + '/api/v1/applications/deploybot-' + appName
+
+        const data = {
+            "apiVersion": "argoproj.io/v1alpha1",
+            "kind": "Application",
+            "metadata": {
+              "name": "deploybot-" + appName
+            },
+            "spec": {
+                "source": {
+                  "repoURL": "https://gitlab.nccu.syntixi.dev/deploybot/argocd.git",
+                  "path": ".",
+                  "targetRevision": appName,
+                  "helm": {
+                    "parameters": [
+                      {
+                        "name": "wake_up_server",
+                        "value": `${wakeUp}`
+                      }
+                    ]
+                  }
+                },
+                "destination": {
+                  "server": "https://kubernetes.default.svc",
+                  "namespace": "default"
+                },
+                "project": "default",
+                "syncPolicy": {
+                  "automated": {
+                    "prune": true,
+                    "selfHeal": true
+                  },
+                  "syncOptions": [
+                    "CreateNamespace=true"
+                  ]
+                }
+              }
+          }
+
+        let result
+        try {
+            result = await axios.put(url, data, {
+                headers: {
+                    Cookie: 'argocd.token=' + token
+                }
+            })
+        }
+        catch (e) {
+            return false
+        }
+        return true
+    },
+    resetParameter: async function (appName, token) {
+        await this.getConfig()
+        //const url = config.server + '/api/v1/applications/deploybot-' + appName + '?refresh=normal'
+        const url = config.server + '/api/v1/applications/deploybot-' + appName
+
+        const data = {
+            "apiVersion": "argoproj.io/v1alpha1",
+            "kind": "Application",
+            "metadata": {
+              "name": "deploybot-" + appName
+            },
+            "spec": {
+                "source": {
+                  "repoURL": "https://gitlab.nccu.syntixi.dev/deploybot/argocd.git",
+                  "path": ".",
+                  "targetRevision": appName
+                },
+                "destination": {
+                  "server": "https://kubernetes.default.svc",
+                  "namespace": "default"
+                },
+                "project": "default",
+                "syncPolicy": {
+                  "automated": {
+                    "prune": true,
+                    "selfHeal": true
+                  },
+                  "syncOptions": [
+                    "CreateNamespace=true"
+                  ]
+                }
+              }
+          }
+
+        let result
+        try {
+            result = await axios.put(url, data, {
+                headers: {
+                    Cookie: 'argocd.token=' + token
+                }
+            })
+        }
+        catch (e) {
+            return false
+        }
+        return true
+    },
     refreshApp: async function (appName, token) {
         await this.getConfig()
         //const url = config.server + '/api/v1/applications/deploybot-' + appName + '?refresh=normal'

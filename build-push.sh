@@ -1,4 +1,4 @@
-TAG=20220606-1522
+TAG=20220610-0129
 
 REPO=dlll-nginx-scale-to-zero
 

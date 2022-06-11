@@ -2,7 +2,7 @@ const http = require('http')
 const url = require('url')
 
 const sleep = require('./lib/sleep')
-const ScaleManager = require('./ScaleManager')
+const ScaleManager = require('./ScaleManagerArgoCD')
 
 let locker
 let isRunning = false
@@ -11,6 +11,10 @@ let SCALE_DOWN_WAIT_MINUTES = 1
 if (process.env.SCALE_DOWN_WAIT_MINUTES) {
   SCALE_DOWN_WAIT_MINUTES = Number(process.env.SCALE_DOWN_WAIT_MINUTES)
 }
+if (SCALE_DOWN_WAIT_MINUTES < 5) {
+  SCALE_DOWN_WAIT_MINUTES = 5
+}
+
 let SCALE_DOWN_WAIT = SCALE_DOWN_WAIT_MINUTES * 60 * 1000
 
 function getTime () {
@@ -23,7 +27,16 @@ async function main () {
   let scaleDownTimer
 
   let handler = async function (req, res) {
-    res.end('') // 這個要放在最前面，才能確保curl不會阻塞
+    // let delay = 0
+    if (isRunning === false) {
+      setTimeout(() => {
+        res.end('') // 這個要放在最前面，才能確保curl不會阻塞
+      }, 15000)
+    }
+    else {
+      res.end('') // 這個要放在最前面，才能確保curl不會阻塞
+    }
+    
     // return false
     // -----------------------------
 
