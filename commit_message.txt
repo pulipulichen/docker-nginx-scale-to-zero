@@ -1,1 +1,1 @@
-修正本地GIT問題。
+reset parameters。

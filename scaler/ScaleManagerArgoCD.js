@@ -83,10 +83,15 @@ async function ScaleInit() {
   // process.chdir(gitFolder)
   // await checkRepo()
 
-  if (!token) {
-    token = await ArgocdHelpers.getCookieToken()
+  if (process.env.HIBERNATE_AFTER_RESTART && 
+      process.env.HIBERNATE_AFTER_RESTART === 'true') {
+    if (!token) {
+      token = await ArgocdHelpers.getCookieToken()
+    }
+    console.log('Reset Parameter')
+    await ArgocdHelpers.resetParameter(BRANCH, token)
   }
-  await ArgocdHelpers.resetParameter(BRANCH, token)
+    
 }
 
 async function update() {
