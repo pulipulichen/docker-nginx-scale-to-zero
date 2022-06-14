@@ -108,7 +108,7 @@ async function ScaleUp() {
   }
   gitLock = 'up'
 
-  // console.log((new Date()), 'ScaleUp', )
+  console.log((new Date()), 'ScaleUp', )
 
   // process.chdir(gitFolder)
   // await update()
