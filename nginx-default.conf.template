@@ -68,7 +68,8 @@ server {
 
   # redirect server error pages to the static page /50x.html 
   #
-  error_page 404 403 500 502 503 504 /error-page.html;
+  #error_page 404 403 500 502 503 504 /error-page.html;
+  error_page 503 504 /error-page.html;
   location = /error-page.html {
 
     #root /dlll_paas/html;

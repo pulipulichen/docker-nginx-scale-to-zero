@@ -118,7 +118,7 @@ module.exports = {
             },
             "spec": {
                 "source": {
-                  "repoURL": "https://gitlab.nccu.syntixi.dev/deploybot/argocd.git",
+                  "repoURL": "https://gitlab.paas-admin.dlll.nccu.edu.tw/deploybot/argocd.git",
                   "path": ".",
                   "targetRevision": appName
                 },
@@ -146,6 +146,7 @@ module.exports = {
                     Cookie: 'argocd.token=' + token
                 }
             })
+            console.log(result.data)
         }
         catch (e) {
             return false
