@@ -63,7 +63,8 @@ module.exports = {
             },
             "spec": {
                 "source": {
-                  "repoURL": "https://gitlab.nccu.syntixi.dev/deploybot/argocd.git",
+                  //"repoURL": "https://gitlab.nccu.syntixi.dev/deploybot/argocd.git",
+                  "repoURL": process.env["DEPLOY_GIT_URL"],
                   "path": ".",
                   "targetRevision": appName,
                   "helm": {
@@ -118,7 +119,8 @@ module.exports = {
             },
             "spec": {
                 "source": {
-                  "repoURL": "https://gitlab.paas-admin.dlll.nccu.edu.tw/deploybot/argocd.git",
+                  //"repoURL": "https://gitlab.paas-admin.dlll.nccu.edu.tw/deploybot/argocd.git",
+                  "repoURL": process.env["DEPLOY_GIT_URL"],
                   "path": ".",
                   "targetRevision": appName
                 },
