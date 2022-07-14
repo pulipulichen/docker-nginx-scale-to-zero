@@ -47,6 +47,9 @@ module.exports = {
         const token = result.data.token
 
         fs.writeFileSync(tmpTokenPath, token, 'utf8')
+        setTimeout(() => {
+            fs.unlinkSync(tmpTokenPath)
+        }, 30 * 60 * 1000) 
 
         return token
     },
