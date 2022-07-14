@@ -12,16 +12,13 @@ app.all('*', function (req, res) {
   }
 
   // 80:31080/TCP,443:31443/TCP
-  let vpnPort = 31080
+  let vpnHTTPPort = 31080
   if (process.env.VPN_HTTP_PORT) {
-    vpnPort = Number(process.env.VPN_HTTP_PORT)
+    vpnHTTPPort = Number(process.env.VPN_HTTP_PORT)
   }
-
-  if (req.protocol === 'https') {
-    vpnPort = 31443
-    if (process.env.VPN_HTTPS_PORT) {
-      vpnPort = Number(process.env.VPN_HTTPS_PORT)
-    }
+  let vpnHTTPSPort = 31443
+  if (process.env.VPN_HTTPS_PORT) {
+    vpnHTTPSPort = Number(process.env.VPN_HTTPS_PORT)
   }
 
   //console.log(req.originalUrl)
@@ -29,34 +26,62 @@ app.all('*', function (req, res) {
   // hostname = 'db.test20220428-2220.pudding.paas.dlll.nccu.edu.tw'
 
   //console.log(hostname)
-  if (hostname.indexOf('.paas.') === -1) {
-    console.error('Illegal URL: ' + getFullURL(req))
+
+  let from = '.paas.'
+  let to = '.paas-vpn.'
+  if (process.env.HOSTNAME_FROM) {
+    from = '.' + process.env.HOSTNAME_FROM + '.'
+  }
+
+  if (hostname.indexOf(from) === -1) {
+    console.erwror('Illegal URL: ' + getFullURL(req))
     res.status(403)
   	   .send('Illegal URL')
     return res.end(); //end the response
   }
 
-  hostname = hostname.replace('.paas.', '.paas-vpn.')
+  if (process.env.HOSTNAME_TO) {
+    to = '.' + process.env.HOSTNAME_TO + '.'
+  }
 
-  let toURL = req.protocol + '://' + hostname + ':' + vpnPort + req.originalUrl
-  console.log('Redirect from: ' + getFullURL(req) + ' to: ' + toURL) 
+
+  hostname = hostname.replace(from, to)
+
+  // let toURL = req.protocol + '://' + hostname + ':' + vpnHTTPPort + req.originalUrl
+  // console.log('Redirect from: ' + getFullURL(req) + ' to: ' + toURL) 
 
   //res.write(toURL); //write a response to the client
   //res.redirect(toURL);
 
   let html = `<!DOCTYPE html>
   <html>
-  <head><title>Redirect to ${toURL}</title></head>
+  <head><title>Redirect to ${hostname}</title></head>
+  <script>
+
+  </script>
   <body>
   
-  <h1>Redirect to ${toURL}</h1>
+  <h1>Redirect to ${hostname}</h1>
   <p>Before redirecting, <strong style="color: red;">make sure you are now connected to the VPN.</strong></p>
   <p>You will be redirected shortly. Thank you for your patience</p>
-  <p><a href="${toURL}">${toURL}</a></p>
+  <p><a id="link" href=""></a></p>
   
   <script>
+  let urlObject = new URL(location.href)
+  let port = ${vpnHTTPPort}
+  if (urlObject.protocol === "https") {
+    port = ${vpnHTTPPort}
+  }
+  urlObject.port = port
+
+  urlObject.hostname = "${hostname}"
+
+  let toURL = urlObject.href
+  document.getElementById("link").innerText = toURL
+  document.getElementById("link").href = toURL
+
   setTimeout(function () {
-    location.href = "${toURL}"
+    location.href = toURL
   }, 3000)
   </script>
   </body>
