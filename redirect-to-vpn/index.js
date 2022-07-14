@@ -44,7 +44,6 @@ app.all('*', function (req, res) {
     to = '.' + process.env.HOSTNAME_TO + '.'
   }
 
-
   hostname = hostname.replace(from, to)
 
   // let toURL = req.protocol + '://' + hostname + ':' + vpnHTTPPort + req.originalUrl
